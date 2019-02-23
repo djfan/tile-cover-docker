@@ -1,0 +1,30 @@
+version: '3'
+services:
+
+  analysis:
+    build: .
+    volumes:
+      - ./analysis_params.json:/opt/analysis_params.json
+      - ./initial_data:/opt/initial_data
+      - ./received_data:/opt/received_data
+    command: /opt/analysis_params.json
+
+  db:
+    image: kartoza/postgis
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: analysis
+      POSTGRES_PASS: analysis
+      POSTGRES_DBNAME: analysis
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  db_populator:
+    image: webmapp/gdal-docker
+    volumes:
+      - ./initial_data:/opt/initial_data/
+
+
+volumes:
+  postgres_data: {}

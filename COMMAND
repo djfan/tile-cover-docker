@@ -1,0 +1,14 @@
+docker-compose build analysis && docker-compose up -d db && docker-compose run analysis
+docker-compose down
+docker-compose exec db psql postgresql://analysis:analysis@localhost:5432/analysis
+
+
+ANALYSIS_API_ENDPOINT="http://nmd01-st.azew.cartodb.net/analysis"
+USER=dfan-analysis
+API_KEY=2279c54b81e07ae8322db03290cba5bf2640f0c7
+
+curl \
+  --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"name":"kmeans","image":"rafatower/kmeans:v1.0.0","version":"1.0.0"}' \
+  "${ANALYSIS_API_ENDPOINT}/jobs?user=${USER}&api_key=${API_KEY}"

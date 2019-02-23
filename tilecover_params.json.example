@@ -1,0 +1,6 @@
+{
+    "conn": "postgresql://analysis:analysis@localhost:5432/analysis",
+    "dataset": "brooklyn_poverty",
+    "columns": ["poverty_per_pop"],
+    "n_clusters": 7
+}
