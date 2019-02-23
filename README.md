@@ -1,5 +1,8 @@
 # tile-cover-docker
 
+[MapBox Tile-Cover](https://github.com/mapbox/tile-cover)
+[MapBox Supermercado](https://github.com/mapbox/supermercado)
+
 ```
 .
 ├── COMMAND
@@ -19,4 +22,10 @@
 ├── tile_cover.py
 ├── tile_cover.sh
 └── tilecover_params.json.example
+```
+
+```bash
+docker-compose build analysis && docker-compose up -d db && docker-compose run analysis
+docker-compose exec db psql postgresql://analysis:analysis@localhost:5432/analysis
+#docker-compose down
 ```
