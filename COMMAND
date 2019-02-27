@@ -7,8 +7,47 @@ ANALYSIS_API_ENDPOINT="http://nmd01-st.azew.cartodb.net/analysis"
 USER=dfan-analysis
 API_KEY=2279c54b81e07ae8322db03290cba5bf2640f0c7
 
+############
+# Register #
+############
 curl \
   --header "Content-Type: application/json" \
   --request POST \
-  --data '{"name":"kmeans","image":"rafatower/kmeans:v1.0.0","version":"1.0.0"}' \
-  "${ANALYSIS_API_ENDPOINT}/jobs?user=${USER}&api_key=${API_KEY}"
+  --data '{"name":"tile-cover", "image":"djfan/tile-cover:v0.1", "version":"0.1", "description":"KMeans clusters", "parameters":["conn", "start", "end", "geoid", "min", "max", "input", "output", "tablename"]}' \
+  "$ANALYSIS_API_ENDPOINT/jobs?user=$USER&api_key=$API_KEY"
+
+export JOB_ID=e7845b10d3dac251ec998d5902afee694959519e
+
+curl -v \
+  --header "Content-Type: application/json" \
+  --request GET \
+  "$ANALYSIS_API_ENDPOINT/jobs?user=$USER&api_key=$API_KEY"
+
+############
+# Schedule #
+############
+curl \
+  --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"job_params":{"conn": "", "start": 9200, "end": 9205, "geoid": "RMSect", "min": 1, "max": 14, "input": "opt/initial_data/uk_official.geojson", "output": "opt/received_data/intermediate.json", "tablename": "res"}}' \
+  "$ANALYSIS_API_ENDPOINT/jobs/$JOB_ID/schedule?user=$USER&api_key=$API_KEY"
+
+export SCHEDULE_ID=tile-cover_35c1c86bfd9c85e3cea27e7d5f4bfb6a5e99ae65+dispatch-1551132280-ccc59690
+curl -v \
+  --header "Content-Type: application/json" \
+  --request GET \
+  "$ANALYSIS_API_ENDPOINT/jobs/$JOB_ID/schedule/$SCHEDULE_ID?user=$USER&api_key=$API_KEY"
+
+############
+# Execute  #
+############
+curl -v \
+  --header "Content-Type: application/json" \
+  --request GET \
+  "$ANALYSIS_API_ENDPOINT/jobs/$JOB_ID/schedule/$SCHEDULE_ID/executions?user=$USER&api_key=$API_KEY"
+
+export EXEC_ID=6ede9b75-2f84-c9f4-cd92-cbb9bb71c797
+curl -v \
+  --header "Content-Type: application/json" \
+  --request GET \
+  "$ANALYSIS_API_ENDPOINT/jobs/$JOB_ID/schedule/$SCHEDULE_ID/execution/$EXEC_ID/log?user=$USER&api_key=$API_KEY"
